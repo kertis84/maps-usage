@@ -18,11 +18,11 @@
 - **React Hooks** (хуки)
 - **@dnd-kit** (drag & drop toolkit for React)
 - **Ant Design** (библиотека компонентов)
-- **[OSRM HTTP requests]http://project-osrm.org/** (сервис построения маршрутов)
+- **[OSRM HTTP requests](http://project-osrm.org/)** (сервис построения маршрутов)
 
 
 # Вам потребуется
 
 1. Редактор кода **[Visual Studio Code](https://code.visualstudio.com/)**
 2. [NodeJS](https://nodejs.org/en/)
-3. Файты репозитория
+3. Файлы репозитория

@@ -31,7 +31,7 @@ const MapContainer = () => {
       })
     });
 
-    marker.on("mouseup", (e) => {
+    marker.on("mouseup", function (e) {
       map.dragging.enable();
       map.off("mousemove", trackCursor);
       const newWaypoints = waypoints.map((point) => {
@@ -42,7 +42,7 @@ const MapContainer = () => {
       dispatch(setWaypoints(newWaypoints));
     });
 
-    marker.on("contextmenu", (e) => {
+    marker.on("contextmenu", function (e) {
       const newWaypoints = waypoints.filter((point) => 
           point.coordinate[0] !== precisionRound(e.latlng.lat, 8) && point.coordinate[1] !== precisionRound(e.latlng.lng, 8)
       );
