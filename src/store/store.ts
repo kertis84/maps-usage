@@ -10,7 +10,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 // главная сага
 function* sagas() {
-  yield takeEvery(SET_ROUTE, setWayPointsSaga);
+  yield takeLatest(SET_ROUTE, setWayPointsSaga);
 };
 
 // главный reducer
