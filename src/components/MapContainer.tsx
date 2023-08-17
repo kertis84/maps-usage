@@ -16,7 +16,7 @@ const MapContainer = () => {
     const waypoints = useAppSelector((state) => state.waypoints);
 
 
-    const moveableMarker = (map: L.Map, marker: L.CircleMarker) => {
+    const SetMarkerListeners = (map: L.Map, marker: L.CircleMarker) => {
 
         let key = '';
 
@@ -26,9 +26,9 @@ const MapContainer = () => {
             map.dragging.disable();
             map.on("mousemove", trackCursor);
             waypoints.forEach((point) => {
-                point.coordinate[0] === precisionRound(e.latlng.lat, 8) && point.coordinate[1] === precisionRound(e.latlng.lng, 8) &&
-                    (key = point.key);
-            })
+                if (e.latlng.equals(point.coordinate))
+                    key = point.key;
+            });
         });
 
         marker.on("mouseup", function (e) {
@@ -36,7 +36,6 @@ const MapContainer = () => {
             map.dragging.enable();
             map.off("mousemove", trackCursor);
             const newWaypoints = waypoints.map((point) => {
-                // if (point.key === key && point.coordinate[0] !== precisionRound(e.latlng.lat, 8) && point.coordinate[1] !== precisionRound(e.latlng.lng, 8)) {
                 if (point.key === key && !e.latlng.equals(point.coordinate)) {
                     point.coordinate = [precisionRound(e.latlng.lat, 8), precisionRound(e.latlng.lng, 8)];
                     moved = true;
@@ -47,13 +46,11 @@ const MapContainer = () => {
         });
 
         marker.on("contextmenu", function (e) {
-            const newWaypoints = waypoints.filter((point) =>
-                point.coordinate[0] !== precisionRound(e.latlng.lat, 8) && point.coordinate[1] !== precisionRound(e.latlng.lng, 8)
-            );
+            const newWaypoints = waypoints.filter((point) => !e.latlng.equals(point.coordinate));
             dispatch(setWaypoints(newWaypoints));
         });
 
-        return marker
+        return marker;
     }
 
 
@@ -76,10 +73,10 @@ const MapContainer = () => {
             getCenter(data.map((point) => point.coordinate)),
             map.current.getBoundsZoom(data.map((point) => point.coordinate))
         );
-
+        
         tileLayer.current = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map.current);
-
         dispatch(setWaypoints(data));
+
     }, []);
 
 
@@ -103,14 +100,13 @@ const MapContainer = () => {
                     radius: 7,
                 }).addTo(map.current);
 
-                moveableMarker(map.current, marker);
+                SetMarkerListeners(map.current, marker);
             });
         }
     }, [waypoints]);
 
 
     useEffect(() => {
-        pathRef.current && pathRef.current.remove();
         path && (pathRef.current = L.polyline(path, { weight: 5 }).addTo(map.current));
     }, [path]);
 
