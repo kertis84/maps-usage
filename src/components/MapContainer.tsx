@@ -7,110 +7,114 @@ import { useDispatch } from "react-redux";
 import { setWaypoints } from "../store/actions/actions";
 
 const MapContainer = () => {
-  const map = useRef(undefined as unknown as L.Map);
-  const pathRef = useRef(undefined as unknown as L.Polyline);
-  const tileLayer = useRef(undefined as unknown as L.TileLayer);
+    const map = useRef(undefined as unknown as L.Map);
+    const pathRef = useRef(undefined as unknown as L.Polyline);
+    const tileLayer = useRef(undefined as unknown as L.TileLayer);
 
-  const dispatch = useDispatch();
-  const path = useAppSelector((state) => state.path);
-  const waypoints = useAppSelector((state) => state.waypoints);
-
-
-  const moveableMarker = (map: L.Map, marker: L.CircleMarker) => {
-
-    let key = '';
-
-    const trackCursor = (evt: L.LeafletMouseEvent) => marker.setLatLng(evt.latlng);
-
-    marker.on("mousedown", (e) => {
-      map.dragging.disable();
-      map.on("mousemove", trackCursor);
-      waypoints.forEach((point) => {
-        point.coordinate[0] === precisionRound(e.latlng.lat, 8) && point.coordinate[1] === precisionRound(e.latlng.lng, 8) &&
-          (key = point.key);
-      })
-    });
-
-    marker.on("mouseup", function (e) {
-      map.dragging.enable();
-      map.off("mousemove", trackCursor);
-      const newWaypoints = waypoints.map((point) => {
-        if (point.key === key)
-          point.coordinate = [precisionRound(e.latlng.lat, 8), precisionRound(e.latlng.lng, 8)];
-        return point;
-      });
-      dispatch(setWaypoints(newWaypoints));
-    });
-
-    marker.on("contextmenu", function (e) {
-      const newWaypoints = waypoints.filter((point) => 
-          point.coordinate[0] !== precisionRound(e.latlng.lat, 8) && point.coordinate[1] !== precisionRound(e.latlng.lng, 8)
-      );
-      dispatch(setWaypoints(newWaypoints));
-    });
-
-    return marker
-  }
+    const dispatch = useDispatch();
+    const path = useAppSelector((state) => state.path);
+    const waypoints = useAppSelector((state) => state.waypoints);
 
 
-  useEffect(() => {
-    let current_zoom = 10;
+    const moveableMarker = (map: L.Map, marker: L.CircleMarker) => {
 
-    if (map.current) {
-      map.current.off();
-      map.current.remove();
+        let key = '';
+
+        const trackCursor = (evt: L.LeafletMouseEvent) => marker.setLatLng(evt.latlng);
+
+        marker.on("mousedown", (e) => {
+            map.dragging.disable();
+            map.on("mousemove", trackCursor);
+            waypoints.forEach((point) => {
+                point.coordinate[0] === precisionRound(e.latlng.lat, 8) && point.coordinate[1] === precisionRound(e.latlng.lng, 8) &&
+                    (key = point.key);
+            })
+        });
+
+        marker.on("mouseup", function (e) {
+            let moved = false;
+            map.dragging.enable();
+            map.off("mousemove", trackCursor);
+            const newWaypoints = waypoints.map((point) => {
+                // if (point.key === key && point.coordinate[0] !== precisionRound(e.latlng.lat, 8) && point.coordinate[1] !== precisionRound(e.latlng.lng, 8)) {
+                if (point.key === key && !e.latlng.equals(point.coordinate)) {
+                    point.coordinate = [precisionRound(e.latlng.lat, 8), precisionRound(e.latlng.lng, 8)];
+                    moved = true;
+                }
+                return point;
+            });
+            moved && dispatch(setWaypoints(newWaypoints));
+        });
+
+        marker.on("contextmenu", function (e) {
+            const newWaypoints = waypoints.filter((point) =>
+                point.coordinate[0] !== precisionRound(e.latlng.lat, 8) && point.coordinate[1] !== precisionRound(e.latlng.lng, 8)
+            );
+            dispatch(setWaypoints(newWaypoints));
+        });
+
+        return marker
     }
 
-    map.current = L.map("map", {
-      center: getCenter(data.map((point) => point.coordinate)),
-      zoom: current_zoom,
-      attributionControl: false,
-      doubleClickZoom: false
-    });
 
-    map.current.setView(
-      getCenter(data.map((point) => point.coordinate)),
-      map.current.getBoundsZoom(data.map((point) => point.coordinate))
-    );
+    useEffect(() => {
+        let current_zoom = 10;
 
-    tileLayer.current = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map.current);
+        if (map.current) {
+            map.current.off();
+            map.current.remove();
+        }
 
-    dispatch(setWaypoints(data));
-  }, []);
+        map.current = L.map("map", {
+            center: getCenter(data.map((point) => point.coordinate)),
+            zoom: current_zoom,
+            attributionControl: false,
+            doubleClickZoom: false
+        });
 
+        map.current.setView(
+            getCenter(data.map((point) => point.coordinate)),
+            map.current.getBoundsZoom(data.map((point) => point.coordinate))
+        );
 
-  useEffect(() => {
-    map.current.eachLayer((layer) => {
-      layer !== tileLayer.current && layer.remove();
-    });
+        tileLayer.current = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map.current);
 
-    map.current.off('dblclick');
-    map.current.on('dblclick', function (e) {
-      const point: DataType = { key: getKey(), coordinate: [precisionRound(e.latlng.lat, 8), precisionRound(e.latlng.lng, 8)] };
-      dispatch(setWaypoints([...waypoints, point]));
-    });
-
-    if (waypoints.length > 0 && map.current) {
-      waypoints.forEach((point) => {
-        const marker = L.circleMarker(point.coordinate, {
-          color: "red",
-          fillColor: "red",
-          fillOpacity: 1,
-          radius: 7,
-        }).addTo(map.current);
-
-        moveableMarker(map.current, marker);
-      });
-    }
-  }, [waypoints]);
+        dispatch(setWaypoints(data));
+    }, []);
 
 
-  useEffect(() => {
-    pathRef.current && pathRef.current.remove();
-    path && (pathRef.current = L.polyline(path, { weight: 5 }).addTo(map.current));
-  }, [path]);
+    useEffect(() => {
+        map.current.eachLayer((layer) => {
+            layer !== tileLayer.current && layer.remove();
+        });
 
-  return <div id="map" className="map-container"></div>
+        map.current.off('dblclick');
+        map.current.on('dblclick', function (e) {
+            const point: DataType = { key: getKey(), coordinate: [precisionRound(e.latlng.lat, 8), precisionRound(e.latlng.lng, 8)] };
+            dispatch(setWaypoints([...waypoints, point]));
+        });
+
+        if (waypoints.length > 0 && map.current) {
+            waypoints.forEach((point) => {
+                const marker = L.circleMarker(point.coordinate, {
+                    color: "red",
+                    fillColor: "red",
+                    fillOpacity: 1,
+                    radius: 7,
+                }).addTo(map.current);
+
+                moveableMarker(map.current, marker);
+            });
+        }
+    }, [waypoints]);
+
+
+    useEffect(() => {
+        pathRef.current && pathRef.current.remove();
+        path && (pathRef.current = L.polyline(path, { weight: 5 }).addTo(map.current));
+    }, [path]);
+
+    return <div id="map" className="map-container"></div>
 }
 
 export default MapContainer;

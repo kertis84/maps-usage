@@ -14,7 +14,6 @@ export const pathReducer = (
         case GET_OSRM_PATH_SUCCEEDED:   // запись трека в store
             return action.payload;
         case GET_OSRM_PATH_ERROR:       // трек не удалось получить
-            console.error('no path provided');
             return [];
         default:
             return state;

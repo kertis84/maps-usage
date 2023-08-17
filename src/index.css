@@ -17,6 +17,7 @@ body {
 
 .map-container {
   height: 100vh;
+  z-index: 0;
 }
 
 .routes-title {
@@ -24,3 +25,13 @@ body {
   text-align: center;
 }
 
+.waypointss-title {
+  font-weight: bold;
+}
+
+.routes-container {
+  position: absolute;
+  top: 10px;
+  left: 50px;
+  z-index: 1;
+}

@@ -5,21 +5,23 @@ import { takeEvery } from "redux-saga/effects";
 import { setWayPointsSaga } from "./sagas/sagas";
 import { pathReducer, wayPointsReducer } from "./reducers/reducers";
 import { SET_ROUTE } from "./actions/actions";
+import { composeWithDevTools } from 'redux-devtools-extension';
+
 
 const sagaMiddleware = createSagaMiddleware();
 
 // главная сага
 function* sagas() {
-  yield takeEvery(SET_ROUTE, setWayPointsSaga);
+    yield takeEvery(SET_ROUTE, setWayPointsSaga);
 };
 
 // главный reducer
 const rootReducer = combineReducers({
-  waypoints: wayPointsReducer,    // контрольные точки и название маршрута
-  path: pathReducer               // трек
+    waypoints: wayPointsReducer,    // контрольные точки и название маршрута
+    path: pathReducer               // трек
 });
 
-export const store = createStore(rootReducer, applyMiddleware(sagaMiddleware));
+export const store = createStore(rootReducer, composeWithDevTools({ trace: true, traceLimit: 25 })(applyMiddleware(sagaMiddleware)));
 
 sagaMiddleware.run(sagas);
 
