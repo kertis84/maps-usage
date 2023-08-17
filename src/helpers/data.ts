@@ -5,7 +5,7 @@ export interface DataType {
     coordinate: PointTuple;
 }
 
-// исходные данные
+// исходные данные 
 export const data: DataType[] = [
     {key: '1', coordinate: [59.84660399, 30.19496392]},
     {key: '2', coordinate: [59.82934196, 30.42423701]},

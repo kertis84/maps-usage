@@ -19,10 +19,3 @@ interface ILeg {
     summary: string;
     weight: number;
 };
-
-interface IWaypoint {
-    distance: number;
-    hint: string;
-    location: [number, number];
-    name: string;
-};

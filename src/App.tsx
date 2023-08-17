@@ -1,4 +1,4 @@
-import { Button, Dropdown, MenuProps } from "antd";
+import { Button, Dropdown } from "antd";
 import RoutesContainer from "./components/RoutesContainer";
 import MapContainer from "./components/MapContainer";
 

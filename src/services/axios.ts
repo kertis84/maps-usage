@@ -6,7 +6,7 @@ export const API_URL = 'http://router.project-osrm.org/route/v1/driving/';
 
 const $api = axios.create({
     baseURL: API_URL,
-    timeout: 2000,
+    timeout: 2000
 });
 
 // перехватываем ошибку и если ошибка сетевая, однократно повторняем запрос

@@ -1,6 +1,7 @@
 import { PointTuple } from "leaflet";
 import { data } from "./data";
 
+
 export function getCenter(points: PointTuple[]): PointTuple {
     const maxX = Math.max(...points.map((p) => p[0]));
     const minX = Math.min(...points.map((p) => p[0]));

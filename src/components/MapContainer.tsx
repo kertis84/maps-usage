@@ -73,7 +73,7 @@ const MapContainer = () => {
             getCenter(data.map((point) => point.coordinate)),
             map.current.getBoundsZoom(data.map((point) => point.coordinate))
         );
-        
+
         tileLayer.current = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map.current);
         dispatch(setWaypoints(data));
 

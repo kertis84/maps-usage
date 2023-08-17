@@ -18,7 +18,7 @@ function* sagas() {
 // главный reducer
 const rootReducer = combineReducers({
     waypoints: wayPointsReducer,    // контрольные точки и название маршрута
-    path: pathReducer               // трек
+    path: pathReducer,              // трек
 });
 
 export const store = createStore(rootReducer, composeWithDevTools({ trace: true, traceLimit: 25 })(applyMiddleware(sagaMiddleware)));

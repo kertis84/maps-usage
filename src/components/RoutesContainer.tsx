@@ -69,7 +69,7 @@ const RoutesContainer = React.forwardRef((props, ref) => {
                 <Tag color="red" key={`del-${index}`} nonce={index.toString()} style={{ cursor: 'pointer' }} onClick={handleDelete} >
                     Delete
                 </Tag>,
-        },
+        }
     ];
 
     const addRow: ColumnsType<any> = [
@@ -99,7 +99,7 @@ const RoutesContainer = React.forwardRef((props, ref) => {
                 }} >
                     Add
                 </Tag>,
-        },
+        }
     ];
 
     const sensors = useSensors(
@@ -107,7 +107,7 @@ const RoutesContainer = React.forwardRef((props, ref) => {
             activationConstraint: {
                 distance: 1,
             },
-        }),
+        })
     );
 
     const Row = (props: RowProps) => {

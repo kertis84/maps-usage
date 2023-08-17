@@ -1,6 +1,7 @@
 import { PointTuple } from "leaflet";
 import { DataType } from "../../helpers/data";
 
+
 export const GET_OSRM_PATH_SUCCEEDED = 'GET_OSRM_PATH_SUCCEEDED';
 export const GET_OSRM_PATH_ERROR = 'GET_OSRM_PATH_ERROR';
 export const SET_WAYPOINTS = 'SET_WAYPOINTS';
