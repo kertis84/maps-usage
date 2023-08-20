@@ -2,7 +2,7 @@ import axios from "axios";
 
 // 'http://router.project-osrm.org/route/v1/driving/79.81039,12.00679;80.28150,13.08195?alternatives=true&geometries=polyline'
 
-export const API_URL = 'http://router.project-osrm.org/route/v1/driving/';
+export const API_URL = 'https://router.project-osrm.org/route/v1/driving/';
 
 const $api = axios.create({
     baseURL: API_URL,
