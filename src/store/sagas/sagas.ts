@@ -16,12 +16,13 @@ enum ErrTypeEnum {
 
 function message_err(err: AxiosError<any, any>) {
     const err_types = {
-        'ERR_BAD_REQUEST': alert('Невозможно построить маршрут'),
-        'ERR_NETWORK': alert(['Ошибка соединения с сервером построения маршрута', API_URL, 'Попробуйте использовать VPN или прокси'].join('\n')),
-        'ANY_ERR': console.error(err),
+        'ERR_BAD_REQUEST': () => alert('Невозможно построить маршрут'),
+        'ERR_NETWORK': () => alert(['Ошибка соединения с сервером построения маршрута', API_URL, 'Попробуйте использовать VPN или прокси'].join('\n')),
+        'ANY_ERR': () => console.error(err),
     };
 
-    return err_types[err.code as ErrTypeEnum ?? 'ANY_ERR'];
+    const msg = err_types[err.code as ErrTypeEnum ?? 'ANY_ERR'];
+    msg();
 }
 
 // Устанавливаем маршрут в два этапа. Запишем выбранный маршрут в store, затем запрашиваем трек
