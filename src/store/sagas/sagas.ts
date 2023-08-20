@@ -21,8 +21,8 @@ function message_err(err: AxiosError<any, any>) {
         'ANY_ERR': () => console.error(err),
     };
 
-    const msg = err_types[err.code as ErrTypeEnum ?? 'ANY_ERR'];
-    msg();
+    const message_fn = err_types[err.code as ErrTypeEnum ?? 'ANY_ERR'];
+    message_fn();
 }
 
 // Устанавливаем маршрут в два этапа. Запишем выбранный маршрут в store, затем запрашиваем трек
